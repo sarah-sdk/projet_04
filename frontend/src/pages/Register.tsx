@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { authService } from "../services/auth.service";
 import { RegisterData } from "../types";
+import ErrorMessage from "../components/ErrorMessage";
 
 function Register() {
   const navigate = useNavigate();
@@ -43,11 +44,7 @@ function Register() {
           Register for Yoga Studio
         </h2>
 
-        {error ? (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
-          </div>
-        ) : null}
+        {error && <ErrorMessage variant={"inline"} error={error} />}
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">

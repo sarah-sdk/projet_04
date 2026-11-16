@@ -4,6 +4,7 @@ import api from "../services/api";
 import { authService } from "../services/auth.service";
 import { Session } from "../types";
 import SessionCard from "../components/SessionCard";
+import ErrorMessage from "../components/ErrorMessage";
 
 function Sessions() {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -60,13 +61,7 @@ function Sessions() {
   }
 
   if (error) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          {error}
-        </div>
-      </div>
-    );
+    return <ErrorMessage variant={"page"} error={error} />;
   }
 
   return (
