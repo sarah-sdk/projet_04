@@ -54,3 +54,11 @@ export interface SessionFormData {
   description: string;
   teacherId: number;
 }
+
+export interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  login: (credentials: LoginCredentials) => Promise<AuthResponse>;
+  register: (data: RegisterData) => Promise<AuthResponse>;
+  logout: () => void;
+}
