@@ -6,6 +6,7 @@ import { Session } from "../types";
 import SessionCard from "../components/SessionCard";
 import ErrorMessage from "../components/ErrorMessage";
 import { useRequireAuth } from "../hooks/useRequireAuth";
+import axios from "axios";
 
 function Sessions() {
   const { user } = useRequireAuth();
@@ -16,23 +17,38 @@ function Sessions() {
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    fetchSessions();
+    const controller = new AbortController();
+
+    fetchSessions(controller.signal);
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
-  const fetchSessions = async (): Promise<void> => {
+  const fetchSessions = async (signal?: AbortSignal): Promise<void> => {
     try {
       setLoading(true);
+
       const response = await api.get<Session[]>("/session", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        signal,
       });
+
       setSessions(response.data);
     } catch (err: unknown) {
+      if (axios.isCancel(err)) {
+        return;
+      }
+
       setError("Failed to load sessions");
       console.error(err);
     } finally {
-      setLoading(false);
+      if (!signal?.aborted) {
+        setLoading(false);
+      }
     }
   };
 

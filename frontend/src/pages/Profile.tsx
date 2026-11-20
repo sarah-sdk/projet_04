@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { authService } from "../services/auth.service";
@@ -20,28 +20,42 @@ function Profile() {
   const [promoteLoading, setPromoteLoading] = useState<boolean>(false);
   const [promoteError, setPromoteError] = useState<string>("");
 
-  useEffect(() => {
-    if (user) {
-      fetchUserInfo();
-    }
-  }, []);
+  const fetchUserInfo = useCallback(
+    async (signal?: AbortSignal): Promise<void> => {
+      try {
+        setLoading(true);
+        const response = await api.get(`/user/${user.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          signal,
+        });
+        setUserInfo(response.data);
+      } catch (err: unknown) {
+        if (axios.isCancel(err)) {
+          return;
+        }
 
-  const fetchUserInfo = async (): Promise<void> => {
-    try {
-      setLoading(true);
-      const response = await api.get(`/user/${user.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setUserInfo(response.data);
-    } catch (err: unknown) {
-      setError("Failed to load user information");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+        setError("Failed to load user information");
+        console.error(err);
+      } finally {
+        if (!signal?.aborted) {
+          setLoading(false);
+        }
+      }
+    },
+    [token, user.id],
+  );
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetchUserInfo(controller.signal);
+
+    return () => {
+      controller.abort();
+    };
+  }, [fetchUserInfo]);
 
   const handleDeleteAccount = async (): Promise<void> => {
     if (

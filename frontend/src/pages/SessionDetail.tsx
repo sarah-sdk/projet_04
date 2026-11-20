@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { authService } from "../services/auth.service";
 import { Session } from "../types";
 import ErrorMessage from "../components/ErrorMessage";
 import { useRequireAuth } from "../hooks/useRequireAuth";
+import axios from "axios";
 
 function SessionDetail() {
   const { id } = useParams();
@@ -16,26 +17,42 @@ function SessionDetail() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
-  useEffect(() => {
-    fetchSession();
-  }, [id]);
+  const fetchSession = useCallback(
+    async (signal?: AbortSignal): Promise<void> => {
+      try {
+        setLoading(true);
+        const response = await api.get<Session>(`/session/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          signal,
+        });
+        setSession(response.data);
+      } catch (err: unknown) {
+        if (axios.isCancel(err)) {
+          return;
+        }
 
-  const fetchSession = async (): Promise<void> => {
-    try {
-      setLoading(true);
-      const response = await api.get<Session>(`/session/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setSession(response.data);
-    } catch (err: unknown) {
-      setError("Failed to load session details");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+        setError("Failed to load session details");
+        console.error(err);
+      } finally {
+        if (!signal?.aborted) {
+          setLoading(false);
+        }
+      }
+    },
+    [id, token],
+  );
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetchSession(controller.signal);
+
+    return () => {
+      controller.abort();
+    };
+  }, [fetchSession]);
 
   const handleParticipate = async (): Promise<void> => {
     try {

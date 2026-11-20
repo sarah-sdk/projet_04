@@ -1,4 +1,10 @@
-import { useState, useEffect, ChangeEvent, SubmitEvent } from "react";
+import {
+  useState,
+  useEffect,
+  ChangeEvent,
+  SubmitEvent,
+  useCallback,
+} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../services/api";
 import { authService } from "../services/auth.service";
@@ -31,45 +37,67 @@ function SessionForm() {
     }
   }, [user, navigate]);
 
+  const fetchTeachers = useCallback(
+    async (signal?: AbortSignal): Promise<void> => {
+      try {
+        const response = await api.get<Teacher[]>("/teacher", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          signal,
+        });
+        setTeachers(response.data);
+      } catch (err: unknown) {
+        if (axios.isCancel(err)) {
+          return;
+        }
+
+        console.error("Failed to fetch teachers", err);
+      }
+    },
+    [token],
+  );
+
+  const fetchSession = useCallback(
+    async (signal?: AbortSignal): Promise<void> => {
+      try {
+        const response = await api.get<Session>(`/session/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          signal,
+        });
+        const session = response.data;
+        setFormData({
+          name: session.name,
+          date: new Date(session.date).toISOString().split("T")[0],
+          description: session.description,
+          teacherId: session.teacher.id,
+        });
+      } catch (err: unknown) {
+        if (axios.isCancel(err)) {
+          return;
+        }
+
+        setError("Failed to load session");
+        console.error(err);
+      }
+    },
+    [token, id],
+  );
+
   useEffect(() => {
-    fetchTeachers();
+    const controller = new AbortController();
+
+    fetchTeachers(controller.signal);
     if (isEditMode) {
-      fetchSession();
+      fetchSession(controller.signal);
     }
-  }, [id]);
 
-  const fetchTeachers = async (): Promise<void> => {
-    try {
-      const response = await api.get<Teacher[]>("/teacher", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setTeachers(response.data);
-    } catch (err: unknown) {
-      console.error("Failed to fetch teachers", err);
-    }
-  };
-
-  const fetchSession = async (): Promise<void> => {
-    try {
-      const response = await api.get<Session>(`/session/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const session = response.data;
-      setFormData({
-        name: session.name,
-        date: new Date(session.date).toISOString().split("T")[0],
-        description: session.description,
-        teacherId: session.teacher.id,
-      });
-    } catch (err: unknown) {
-      setError("Failed to load session");
-      console.error(err);
-    }
-  };
+    return () => {
+      controller.abort();
+    };
+  }, [fetchTeachers, fetchSession, isEditMode]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
