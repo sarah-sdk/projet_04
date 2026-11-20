@@ -1,10 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { authService } from "../services/auth.service";
+import { useRequireAuth } from "../hooks/useRequireAuth";
 
 function Navbar() {
   const navigate = useNavigate();
-  const user = authService.getCurrentUser();
-  const isAuthenticated = authService.isAuthenticated();
+  const { user, isAuthenticated } = useRequireAuth();
 
   const handleLogout = (): void => {
     authService.logout();

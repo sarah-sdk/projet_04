@@ -5,17 +5,20 @@ import { authService } from "../services/auth.service";
 import { ApiErrorResponse, User } from "../types";
 import ErrorMessage from "../components/ErrorMessage";
 import axios from "axios";
+import { useRequireAuth } from "../hooks/useRequireAuth";
 
 function Profile() {
+  const isDev = import.meta.env.DEV === true;
+
   const navigate = useNavigate();
+  const { user } = useRequireAuth();
+  const token = authService.getToken();
+
   const [userInfo, setUserInfo] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [promoteLoading, setPromoteLoading] = useState<boolean>(false);
   const [promoteError, setPromoteError] = useState<string>("");
-  const user = authService.getCurrentUser();
-  const token = authService.getToken();
-  const isDev = import.meta.env.DEV === true;
 
   useEffect(() => {
     if (user) {

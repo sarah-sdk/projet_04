@@ -5,13 +5,15 @@ import { authService } from "../services/auth.service";
 import { Session } from "../types";
 import SessionCard from "../components/SessionCard";
 import ErrorMessage from "../components/ErrorMessage";
+import { useRequireAuth } from "../hooks/useRequireAuth";
 
 function Sessions() {
+  const { user } = useRequireAuth();
+  const token = authService.getToken();
+
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const user = authService.getCurrentUser();
-  const token = authService.getToken();
 
   useEffect(() => {
     fetchSessions();
@@ -89,7 +91,7 @@ function Sessions() {
               <SessionCard
                 key={session.id}
                 session={session}
-                isAdmin={user.isAdmin}
+                isAdmin={user.admin}
                 onDelete={handleDelete}
               />
             ))}

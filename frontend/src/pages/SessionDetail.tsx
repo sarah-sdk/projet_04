@@ -4,15 +4,17 @@ import api from "../services/api";
 import { authService } from "../services/auth.service";
 import { Session } from "../types";
 import ErrorMessage from "../components/ErrorMessage";
+import { useRequireAuth } from "../hooks/useRequireAuth";
 
 function SessionDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useRequireAuth();
+  const token = authService.getToken();
+
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const user = authService.getCurrentUser();
-  const token = authService.getToken();
 
   useEffect(() => {
     fetchSession();

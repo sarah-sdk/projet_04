@@ -5,11 +5,14 @@ import { authService } from "../services/auth.service";
 import { Teacher, Session, SessionFormData, ApiErrorResponse } from "../types";
 import ErrorMessage from "../components/ErrorMessage";
 import axios from "axios";
+import { useRequireAuth } from "../hooks/useRequireAuth";
 
 function SessionForm() {
   const navigate = useNavigate();
   const { id } = useParams();
   const isEditMode = !!id;
+  const { user } = useRequireAuth();
+  const token = authService.getToken();
 
   const [formData, setFormData] = useState<SessionFormData>({
     name: "",
@@ -20,8 +23,6 @@ function SessionForm() {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const user = authService.getCurrentUser();
-  const token = authService.getToken();
 
   // Redirect if not admin
   useEffect(() => {
