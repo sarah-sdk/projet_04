@@ -10,7 +10,7 @@ import { authService } from "../services/auth.service";
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export function AuthProvided({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() =>
     authService.getCurrentUser(),
   );
