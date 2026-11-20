@@ -57,3 +57,7 @@ export interface AuthContextType {
   register: (data: RegisterData) => Promise<AuthResponse>;
   logout: () => void;
 }
+
+export interface ApiErrorResponse {
+  message: string;
+}

@@ -27,7 +27,7 @@ function SessionDetail() {
         },
       });
       setSession(response.data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError("Failed to load session details");
       console.error(err);
     } finally {
@@ -47,7 +47,7 @@ function SessionDetail() {
         },
       );
       fetchSession();
-    } catch (err: any) {
+    } catch (err: unknown) {
       alert("Failed to join session");
       console.error(err);
     }
@@ -61,7 +61,7 @@ function SessionDetail() {
         },
       });
       fetchSession();
-    } catch (err: any) {
+    } catch (err: unknown) {
       alert("Failed to leave session");
       console.error(err);
     }
@@ -79,7 +79,7 @@ function SessionDetail() {
         },
       });
       navigate("/sessions");
-    } catch (err: any) {
+    } catch (err: unknown) {
       alert("Failed to delete session");
       console.error(err);
     }

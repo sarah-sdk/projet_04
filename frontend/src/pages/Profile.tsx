@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { authService } from "../services/auth.service";
-import { User } from "../types";
+import { ApiErrorResponse, User } from "../types";
 import ErrorMessage from "../components/ErrorMessage";
+import axios from "axios";
 
 function Profile() {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ function Profile() {
         },
       });
       setUserInfo(response.data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError("Failed to load user information");
       console.error(err);
     } finally {
@@ -56,7 +57,7 @@ function Profile() {
       });
       authService.logout();
       navigate("/login");
-    } catch (err: any) {
+    } catch (err: unknown) {
       alert("Failed to delete account");
       console.error(err);
     }
@@ -77,8 +78,14 @@ function Profile() {
       );
       setUserInfo(response.data);
       authService.updateCurrentUser({ admin: response.data.admin });
-    } catch (err: any) {
-      setPromoteError("Failed to promote to admin");
+    } catch (err: unknown) {
+      let errorMsg = "Failed to promote to admin";
+
+      if (axios.isAxiosError<ApiErrorResponse>(err)) {
+        errorMsg = err.response?.data?.message ?? errorMsg;
+      }
+
+      setPromoteError(errorMsg);
       console.error(err);
     } finally {
       setPromoteLoading(false);

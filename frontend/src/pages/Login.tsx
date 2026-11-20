@@ -2,6 +2,8 @@ import { SubmitEvent, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { authService } from "../services/auth.service";
 import ErrorMessage from "../components/ErrorMessage";
+import axios from "axios";
+import { ApiErrorResponse } from "../types";
 
 function Login() {
   const navigate = useNavigate();
@@ -19,8 +21,14 @@ function Login() {
     try {
       await authService.login({ email, password });
       navigate("/sessions");
-    } catch (err: any) {
-      setError(err.response?.data.message || "Login failed");
+    } catch (err: unknown) {
+      let errorMsg = "Login failed";
+
+      if (axios.isAxiosError<ApiErrorResponse>(err)) {
+        errorMsg = err.response?.data?.message ?? errorMsg;
+      }
+
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }

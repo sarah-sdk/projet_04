@@ -26,7 +26,7 @@ function Sessions() {
         },
       });
       setSessions(response.data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError("Failed to load sessions");
       console.error(err);
     } finally {
@@ -46,7 +46,7 @@ function Sessions() {
         },
       });
       fetchSessions();
-    } catch (err: any) {
+    } catch (err: unknown) {
       alert("Failed to delete session");
       console.error(err);
     }

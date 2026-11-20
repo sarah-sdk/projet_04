@@ -1,8 +1,9 @@
 import { ChangeEvent, SubmitEvent, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { authService } from "../services/auth.service";
-import { RegisterData } from "../types";
+import { ApiErrorResponse, RegisterData } from "../types";
 import ErrorMessage from "../components/ErrorMessage";
+import axios from "axios";
 
 function Register() {
   const navigate = useNavigate();
@@ -30,8 +31,14 @@ function Register() {
     try {
       await authService.register(formData);
       navigate("/sessions");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Registration failed");
+    } catch (err: unknown) {
+      let errorMsg = "Registration failed";
+
+      if (axios.isAxiosError<ApiErrorResponse>(err)) {
+        errorMsg = err.response?.data?.message ?? errorMsg;
+      }
+
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }

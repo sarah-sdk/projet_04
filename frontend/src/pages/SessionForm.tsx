@@ -2,8 +2,9 @@ import { useState, useEffect, ChangeEvent, SubmitEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../services/api";
 import { authService } from "../services/auth.service";
-import { Teacher, Session, SessionFormData } from "../types";
+import { Teacher, Session, SessionFormData, ApiErrorResponse } from "../types";
 import ErrorMessage from "../components/ErrorMessage";
+import axios from "axios";
 
 function SessionForm() {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ function SessionForm() {
         },
       });
       setTeachers(response.data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to fetch teachers", err);
     }
   };
@@ -63,7 +64,7 @@ function SessionForm() {
         description: session.description,
         teacherId: session.teacher.id,
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError("Failed to load session");
       console.error(err);
     }
@@ -100,8 +101,14 @@ function SessionForm() {
         });
       }
       navigate("/sessions");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to save session");
+    } catch (err: unknown) {
+      let errorMsg = "Failed to save session";
+
+      if (axios.isAxiosError<ApiErrorResponse>(err)) {
+        errorMsg = err.response?.data?.message ?? errorMsg;
+      }
+
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
