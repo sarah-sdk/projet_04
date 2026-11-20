@@ -30,14 +30,14 @@ export default function SessionCard({
           View Details
         </Link>
 
-        {isAdmin ? (
+        {isAdmin && (
           <button
             onClick={() => onDelete(session.id)}
             className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
           >
             Delete
           </button>
-        ) : null}
+        )}
       </div>
     </div>
   );

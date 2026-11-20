@@ -1,10 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { authService } from "../services/auth.service";
-import { useRequireAuth } from "../hooks/useRequireAuth";
+import { useAuth } from "../contexts/AuthContext";
 
 function Navbar() {
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useRequireAuth();
+  const { user, isAuthenticated } = useAuth();
 
   const handleLogout = (): void => {
     authService.logout();
@@ -25,11 +25,11 @@ function Navbar() {
                 <Link to="/sessions" className="hover:text-indigo-200">
                   Sessions
                 </Link>
-                {user && user.admin ? (
+                {user && user.admin && (
                   <Link to="/sessions/create" className="hover:text-indigo-200">
                     Create Session
                   </Link>
-                ) : null}
+                )}
                 <Link to="/profile" className="hover:text-indigo-200">
                   Profile
                 </Link>

@@ -150,7 +150,7 @@ function Profile() {
                   </span>
                 )}
               </p>
-              {isDev && !userInfo.admin ? (
+              {isDev && !userInfo.admin && (
                 <div className="mt-3">
                   <button
                     onClick={handlePromoteAdmin}
@@ -163,7 +163,7 @@ function Profile() {
                     <ErrorMessage variant={"inline"} error={promoteError} />
                   )}
                 </div>
-              ) : null}
+              )}
             </div>
 
             <div className="border-b pb-4">

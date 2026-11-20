@@ -26,7 +26,7 @@ function SessionForm() {
 
   // Redirect if not admin
   useEffect(() => {
-    if (!user || !user.admin) {
+    if (!user.admin) {
       navigate("/sessions");
     }
   }, [user, navigate]);
