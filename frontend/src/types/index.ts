@@ -4,16 +4,16 @@ export interface User {
   firstName: string;
   lastName: string;
   admin: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Teacher {
   id: number;
   firstName: string;
   lastName: string;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Session {
@@ -23,8 +23,8 @@ export interface Session {
   description: string;
   teacher: Teacher;
   users: number[];
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface AuthResponse extends User {
