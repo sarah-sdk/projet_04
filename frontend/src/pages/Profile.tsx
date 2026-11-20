@@ -14,7 +14,7 @@ function Profile() {
   const [promoteError, setPromoteError] = useState<string>("");
   const user = authService.getCurrentUser();
   const token = authService.getToken();
-  const isDev = (import.meta as any).env?.DEV === true;
+  const isDev = import.meta.env.DEV === true;
 
   useEffect(() => {
     if (user) {
@@ -22,7 +22,7 @@ function Profile() {
     }
   }, []);
 
-  const fetchUserInfo = async (): Promise<any> => {
+  const fetchUserInfo = async (): Promise<void> => {
     try {
       setLoading(true);
       const response = await api.get(`/user/${user.id}`, {
@@ -39,7 +39,7 @@ function Profile() {
     }
   };
 
-  const handleDeleteAccount = async (): Promise<any> => {
+  const handleDeleteAccount = async (): Promise<void> => {
     if (
       !window.confirm(
         "Are you sure you want to delete your account? This action cannot be undone.",
@@ -62,7 +62,7 @@ function Profile() {
     }
   };
 
-  const handlePromoteAdmin = async (): Promise<any> => {
+  const handlePromoteAdmin = async (): Promise<void> => {
     try {
       setPromoteError("");
       setPromoteLoading(true);

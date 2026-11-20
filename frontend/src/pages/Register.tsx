@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, SubmitEvent, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { authService } from "../services/auth.service";
 import { RegisterData } from "../types";
@@ -15,14 +15,14 @@ function Register() {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleChange = (e: any): any => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = async (e: any): Promise<any> => {
+  const handleSubmit = async (e: SubmitEvent): Promise<void> => {
     e.preventDefault();
     setError("");
     setLoading(true);

@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { SubmitEvent, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { authService } from "../services/auth.service";
 import ErrorMessage from "../components/ErrorMessage";
 
 function Login() {
   const navigate = useNavigate();
+
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit = async (e: any): Promise<any> => {
+  const handleSubmit = async (e: SubmitEvent): Promise<void> => {
     e.preventDefault();
     setError("");
     setLoading(true);
@@ -19,7 +20,7 @@ function Login() {
       await authService.login({ email, password });
       navigate("/sessions");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Login failed");
+      setError(err.response?.data.message || "Login failed");
     } finally {
       setLoading(false);
     }

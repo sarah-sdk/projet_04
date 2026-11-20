@@ -18,7 +18,7 @@ function SessionDetail() {
     fetchSession();
   }, [id]);
 
-  const fetchSession = async (): Promise<any> => {
+  const fetchSession = async (): Promise<void> => {
     try {
       setLoading(true);
       const response = await api.get<Session>(`/session/${id}`, {
@@ -35,7 +35,7 @@ function SessionDetail() {
     }
   };
 
-  const handleParticipate = async (): Promise<any> => {
+  const handleParticipate = async (): Promise<void> => {
     try {
       await api.post(
         `/session/${id}/participate/${user.id}`,
@@ -53,7 +53,7 @@ function SessionDetail() {
     }
   };
 
-  const handleUnparticipate = async (): Promise<any> => {
+  const handleUnparticipate = async (): Promise<void> => {
     try {
       await api.delete(`/session/${id}/participate/${user.id}`, {
         headers: {
@@ -67,7 +67,7 @@ function SessionDetail() {
     }
   };
 
-  const handleDelete = async (): Promise<any> => {
+  const handleDelete = async (): Promise<void> => {
     if (!window.confirm("Are you sure you want to delete this session?")) {
       return;
     }

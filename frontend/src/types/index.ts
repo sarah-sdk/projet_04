@@ -27,12 +27,7 @@ export interface Session {
   updatedAt?: string;
 }
 
-export interface AuthResponse {
-  id: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  admin: boolean;
+export interface AuthResponse extends User {
   token: string;
 }
 

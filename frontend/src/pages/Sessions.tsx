@@ -17,7 +17,7 @@ function Sessions() {
     fetchSessions();
   }, []);
 
-  const fetchSessions = async (): Promise<any> => {
+  const fetchSessions = async (): Promise<void> => {
     try {
       setLoading(true);
       const response = await api.get<Session[]>("/session", {
@@ -34,7 +34,7 @@ function Sessions() {
     }
   };
 
-  const handleDelete = async (sessionId: any): Promise<void> => {
+  const handleDelete = async (sessionId: number): Promise<void> => {
     if (!window.confirm("Are you sure you want to delete this session?")) {
       return;
     }
@@ -85,7 +85,7 @@ function Sessions() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sessions.map((session: any) => (
+            {sessions.map((session) => (
               <SessionCard
                 key={session.id}
                 session={session}
