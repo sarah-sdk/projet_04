@@ -12,6 +12,8 @@ import { InvalidUserIdError } from "../errors/invalid-user-id.error";
 import { InvalidTeacherIdError } from "../errors/invalid-teacher-id.error";
 import { UnauthorizedDeletionError } from "../errors/unauthorized-deletion.error";
 import { NotDevelopmentEnvError } from "../errors/not-development-env.error";
+import { InvalidCredentialsError } from "../errors/invalid-credentials.error";
+import { AlreadyExistEmailError } from "../errors/already-exist-email.error";
 
 export function mapError(error: unknown): Error {
   if (
@@ -31,7 +33,10 @@ export function mapError(error: unknown): Error {
     return new AppError(error.message, 403);
   }
 
-  if (error instanceof UnauthenticatedError) {
+  if (
+    error instanceof UnauthenticatedError ||
+    error instanceof InvalidCredentialsError
+  ) {
     return new AppError(error.message, 401);
   }
 
@@ -40,6 +45,7 @@ export function mapError(error: unknown): Error {
     error instanceof InvalidSessionIdError ||
     error instanceof InvalidUserIdError ||
     error instanceof InvalidTeacherIdError ||
+    error instanceof AlreadyExistEmailError ||
     error instanceof ZodError
   ) {
     return new AppError(error.message, 400);
