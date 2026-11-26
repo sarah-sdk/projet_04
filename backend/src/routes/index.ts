@@ -28,7 +28,7 @@ router.post(
 router.get(
   "/api/session",
   authMiddleware,
-  asyncHandler((req, res) => sessionController.getAll(res)),
+  asyncHandler((req, res) => sessionController.getAll(req, res)),
 );
 router.get(
   "/api/session/:id",

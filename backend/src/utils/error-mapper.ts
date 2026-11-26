@@ -9,6 +9,7 @@ import { UnauthenticatedError } from "../errors/unauthenticated.error";
 import { UserNotFoundError } from "../errors/user-not-found.error";
 import { AppError } from "./app-error";
 import { InvalidUserIdError } from "../errors/invalid-user-id.error";
+import { InvalidTeacherIdError } from "../errors/invalid-teacher-id.error";
 
 export function mapError(error: unknown): Error {
   if (
@@ -32,6 +33,7 @@ export function mapError(error: unknown): Error {
     error instanceof AlreadyParticipatingError ||
     error instanceof InvalidSessionIdError ||
     error instanceof InvalidUserIdError ||
+    error instanceof InvalidTeacherIdError ||
     error instanceof ZodError
   ) {
     return new AppError(error.message, 400);
