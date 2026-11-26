@@ -3,6 +3,6 @@ export class InvalidUserIdError extends Error {
     super("Invalid user ID");
 
     this.name = "InvalidUserIdError";
-    Object.setPrototypeOf(this, new.target.prototype);
+    Object.setPrototypeOf(this, InvalidUserIdError.prototype);
   }
 }

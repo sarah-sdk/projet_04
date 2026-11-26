@@ -10,6 +10,8 @@ import { UserNotFoundError } from "../errors/user-not-found.error";
 import { AppError } from "./app-error";
 import { InvalidUserIdError } from "../errors/invalid-user-id.error";
 import { InvalidTeacherIdError } from "../errors/invalid-teacher-id.error";
+import { UnauthorizedDeletionError } from "../errors/unauthorized-deletion.error";
+import { NotDevelopmentEnvError } from "../errors/not-development-env.error";
 
 export function mapError(error: unknown): Error {
   if (
@@ -21,7 +23,11 @@ export function mapError(error: unknown): Error {
     return new AppError(error.message, 404);
   }
 
-  if (error instanceof NotAdminError) {
+  if (
+    error instanceof NotAdminError ||
+    error instanceof UnauthorizedDeletionError ||
+    error instanceof NotDevelopmentEnvError
+  ) {
     return new AppError(error.message, 403);
   }
 

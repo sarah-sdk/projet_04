@@ -3,6 +3,6 @@ export class InvalidSessionIdError extends Error {
     super("Invalid session ID");
 
     this.name = "InvalidSessionIdError";
-    Object.setPrototypeOf(this, new.target.prototype);
+    Object.setPrototypeOf(this, InvalidSessionIdError.prototype);
   }
 }

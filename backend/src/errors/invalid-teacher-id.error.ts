@@ -3,6 +3,6 @@ export class InvalidTeacherIdError extends Error {
     super("Invalid teacher ID");
 
     this.name = "InvalidTeacherIdError";
-    Object.setPrototypeOf(this, new.target.prototype);
+    Object.setPrototypeOf(this, InvalidTeacherIdError.prototype);
   }
 }

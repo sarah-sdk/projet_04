@@ -3,6 +3,6 @@ export class UnauthenticatedError extends Error {
     super("User not authenticated");
 
     this.name = "UnauthenticatedError";
-    Object.setPrototypeOf(this, new.target.prototype);
+    Object.setPrototypeOf(this, UnauthenticatedError.prototype);
   }
 }
