@@ -1,10 +1,14 @@
+import { ZodError } from "zod";
 import { AlreadyParticipatingError } from "../errors/already-participating.error";
+import { InvalidSessionIdError } from "../errors/invalid-session-id.error";
 import { NotAdminError } from "../errors/not-admin.error";
 import { NotParticipatingError } from "../errors/not-participating.error";
 import { SessionNotFoundError } from "../errors/session-not-found.error";
 import { TeacherNotFoundError } from "../errors/teacher-not-found.error";
+import { UnauthenticatedError } from "../errors/unauthenticated.error";
 import { UserNotFoundError } from "../errors/user-not-found.error";
 import { AppError } from "./app-error";
+import { InvalidUserIdError } from "../errors/invalid-user-id.error";
 
 export function mapError(error: unknown): Error {
   if (
@@ -20,7 +24,16 @@ export function mapError(error: unknown): Error {
     return new AppError(error.message, 403);
   }
 
-  if (error instanceof AlreadyParticipatingError) {
+  if (error instanceof UnauthenticatedError) {
+    return new AppError(error.message, 401);
+  }
+
+  if (
+    error instanceof AlreadyParticipatingError ||
+    error instanceof InvalidSessionIdError ||
+    error instanceof InvalidUserIdError ||
+    error instanceof ZodError
+  ) {
     return new AppError(error.message, 400);
   }
 
